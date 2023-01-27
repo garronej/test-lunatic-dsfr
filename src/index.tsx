@@ -1,23 +1,32 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { startReactDsfr } from "@codegouvfr/react-dsfr/spa";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
 import { Badge } from "@codegouvfr/react-dsfr/Badge";
+import { startReactDsfr } from "@codegouvfr/react-dsfr/spa";
 import { MyComponent } from "lunatic-dsfr/MyComponent";
-import { fr } from "@codegouvfr/react-dsfr";
 import { makeStyles } from "tss-react/dsfr";
+import { fr } from "@codegouvfr/react-dsfr";
 
 startReactDsfr({ defaultColorScheme: "system" });
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
   <React.StrictMode>
     <Root />
   </React.StrictMode>
 );
 
 
+
+
 function Root() {
 
-  const { classes } = useStyles();
+  const [clickCount, setClickCount] = useState(0);
+
+  const { classes } = useStyles({
+    isMyDivBig: clickCount >= 3
+  });
 
   return (
     <>
@@ -29,6 +38,7 @@ function Root() {
       />
       <div
         className={classes.myDiv}
+        onClick={() => setClickCount(clickCount + 1)}
       />
     </>
   );
@@ -36,13 +46,13 @@ function Root() {
 
 }
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles<{ isMyDivBig: boolean; }>({ name: { Root } })((theme, { isMyDivBig }) => ({
   myComponent: {
     marginTop: fr.spacing("12w"),
   },
   myDiv: {
-    width: 100,
-    height: 100,
+    width: isMyDivBig ? 200 : 100,
+    height: isMyDivBig ? 200 : 100,
     backgroundColor: theme.decisions.background.actionHigh.redMarianne.default,
     "&:hover": {
       backgroundColor: theme.decisions.background.actionHigh.redMarianne.hover,
